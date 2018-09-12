@@ -11,3 +11,8 @@ export function setRuntimeVariable({ name, value }) {
     },
   };
 }
+
+export const add = value => ({
+  type: 'ADD',
+  value,
+})

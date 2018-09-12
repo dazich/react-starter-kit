@@ -9,8 +9,10 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import { connect } from 'react-redux';
+// import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Home.css';
+import { add } from '../../actions/runtime';
 
 class Home extends React.Component {
   static propTypes = {
@@ -23,11 +25,17 @@ class Home extends React.Component {
     ).isRequired,
   };
 
+  componentDidMount() {
+    console.info(this.props);
+    this.props.add()
+  }
+
   render() {
+    console.info(this.props);
     return (
       <div className={s.root}>
         <div className={s.container}>
-          <h1>React.js News</h1>
+          <h1 onClick={this.props.add}>React.js News{this.props.count}</h1>
           {this.props.news.map(item => (
             <article key={item.link} className={s.newsItem}>
               <h1 className={s.newsTitle}>
@@ -46,4 +54,12 @@ class Home extends React.Component {
   }
 }
 
-export default withStyles(s)(Home);
+const mapStateToProps = state => ({
+  count: state.count,
+});
+
+const mapDispatchToProps = dispatch => ({
+  add: count => dispatch(add(count)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

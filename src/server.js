@@ -7,6 +7,8 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
+import { Provider } from 'react-redux';
+import { createStore } from 'redux'
 import path from 'path';
 import express from 'express';
 import cookieParser from 'cookie-parser';
@@ -33,7 +35,9 @@ import chunks from './chunk-manifest.json'; // eslint-disable-line import/no-unr
 import configureStore from './store/configureStore';
 import { setRuntimeVariable } from './actions/runtime';
 import config from './config';
+import rootReducer from './reducers';
 
+const initStore = createStore(rootReducer)
 process.on('unhandledRejection', (reason, p) => {
   console.error('Unhandled Rejection at:', p, 'reason:', reason);
   // send entire app down. Process manager will restart it
@@ -146,10 +150,11 @@ app.get('*', async (req, res, next) => {
       user: req.user || null,
     };
 
-    const store = configureStore(initialState, {
-      fetch,
-      // I should not use `history` on server.. but how I do redirection? follow universal-router
-    });
+    // const store = configureStore(initialState, {
+    //   fetch,
+    //   // I should not use `history` on server.. but how I do redirection? follow universal-router
+    // });
+    const store = initStore;
 
     store.dispatch(
       setRuntimeVariable({
@@ -180,7 +185,9 @@ app.get('*', async (req, res, next) => {
 
     const data = { ...route };
     data.children = ReactDOM.renderToString(
-      <App context={context}>{route.component}</App>,
+      <Provider store={store}>
+        <App context={context}>{route.component}</App>
+      </Provider>,
     );
     data.styles = [{ id: 'css', cssText: [...css].join('') }];
 

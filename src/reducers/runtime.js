@@ -1,5 +1,9 @@
 import { SET_RUNTIME_VARIABLE } from '../constants';
 
+const initialState = {
+  count: 1112222
+}
+
 export default function runtime(state = {}, action) {
   switch (action.type) {
     case SET_RUNTIME_VARIABLE:

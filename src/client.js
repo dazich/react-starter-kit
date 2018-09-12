@@ -7,6 +7,8 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
+import { Provider } from 'react-redux';
+import { createStore } from 'redux'
 import 'whatwg-fetch';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -19,7 +21,9 @@ import configureStore from './store/configureStore';
 import history from './history';
 import { updateMeta } from './DOMUtils';
 import router from './router';
+import rootReducer from './reducers';
 
+const store = createStore(rootReducer)//configureStore(window.App.state, { history });
 // Global (context) variables that can be easily accessed from any React component
 // https://facebook.github.io/react/docs/context.html
 const context = {
@@ -38,7 +42,7 @@ const context = {
   }),
   // Initialize a new Redux store
   // http://redux.js.org/docs/basics/UsageWithReact.html
-  store: configureStore(window.App.state, { history }),
+  store,
   storeSubscription: null,
 };
 
@@ -83,7 +87,9 @@ async function onLocationChange(location, action) {
 
     const renderReactApp = isInitialRender ? ReactDOM.hydrate : ReactDOM.render;
     appInstance = renderReactApp(
-      <App context={context}>{route.component}</App>,
+      <Provider store={store}>
+        <App context={context}>{route.component}</App>
+      </Provider>,
       container,
       () => {
         if (isInitialRender) {
