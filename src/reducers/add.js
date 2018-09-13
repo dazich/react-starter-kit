@@ -1,5 +1,5 @@
 const initialState = {
-  count: 1112222,
+  count: 2,
   test: 123
 };
 const add = (state = initialState, action) => {

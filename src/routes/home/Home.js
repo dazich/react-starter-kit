@@ -26,16 +26,14 @@ class Home extends React.Component {
   };
 
   componentDidMount() {
-    console.info(this.props);
-    this.props.add()
   }
 
   render() {
-    console.info(this.props);
+    console.info('this.props::::', this.props.count);
     return (
       <div className={s.root}>
         <div className={s.container}>
-          <h1 onClick={this.props.add}>React.js News{this.props.count}</h1>
+          <h1 onClick={() => this.props.add(1)}>React.js News：{this.props.count}</h1>
           {this.props.news.map(item => (
             <article key={item.link} className={s.newsItem}>
               <h1 className={s.newsTitle}>
@@ -54,9 +52,12 @@ class Home extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  count: state.count,
-});
+const mapStateToProps = state => {
+  console.info('mapStateToProps::', state);
+  return {
+    count: state.add.count,
+  };
+}
 
 const mapDispatchToProps = dispatch => ({
   add: count => dispatch(add(count)),

@@ -12,7 +12,7 @@ export function setRuntimeVariable({ name, value }) {
   };
 }
 
-export const add = value => ({
+export const add = count => ({
   type: 'ADD',
-  value,
+  count,
 })
