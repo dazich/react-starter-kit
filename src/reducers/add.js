@@ -1,9 +1,13 @@
 const initialState = {
   count: 2,
-  test: 123
+  test: 123,
 };
+async function sleep(time) {
+  return Promise(resolve => {
+    setTimeout(() => resolve(), time || 0);
+  });
+}
 const add = (state = initialState, action) => {
-  console.log(state, action);
   switch (action.type) {
     case 'ADD':
       const { count } = state;

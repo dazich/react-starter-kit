@@ -8,7 +8,8 @@
  */
 
 import { Provider } from 'react-redux';
-import { createStore } from 'redux'
+import thunk from 'redux-thunk';
+import { createStore, applyMiddleware } from 'redux';
 import 'whatwg-fetch';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -23,7 +24,16 @@ import { updateMeta } from './DOMUtils';
 import router from './router';
 import rootReducer from './reducers';
 
-const store = createStore(rootReducer)//configureStore(window.App.state, { history });
+function loggers({getState}) {
+  return next => action => {
+    console.log('will dispatch', action);
+    const returnValue = next(action);
+    console.info('state after dispatch', getState());
+    return returnValue
+  }
+}
+
+const store = createStore(rootReducer, applyMiddleware(loggers, thunk.withExtraArgument('dazi tag'))); //configureStore(window.App.state, { history });
 // Global (context) variables that can be easily accessed from any React component
 // https://facebook.github.io/react/docs/context.html
 const context = {

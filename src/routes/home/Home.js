@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 // import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Home.css';
-import { add } from '../../actions/runtime';
+import { add, testThunk } from '../../actions/runtime';
 
 class Home extends React.Component {
   static propTypes = {
@@ -26,14 +26,16 @@ class Home extends React.Component {
   };
 
   componentDidMount() {
+    console.info('this.props::::', this.props);
   }
 
   render() {
-    console.info('this.props::::', this.props.count);
     return (
       <div className={s.root}>
         <div className={s.container}>
-          <h1 onClick={() => this.props.add(1)}>React.js News：{this.props.count}</h1>
+          <h1 onClick={() => this.props.add(1)}>
+            React.js News：{this.props.count}
+          </h1>
           {this.props.news.map(item => (
             <article key={item.link} className={s.newsItem}>
               <h1 className={s.newsTitle}>
@@ -53,14 +55,15 @@ class Home extends React.Component {
 }
 
 const mapStateToProps = state => {
-  console.info('mapStateToProps::', state);
   return {
     count: state.add.count,
   };
-}
+};
 
 const mapDispatchToProps = dispatch => ({
-  add: count => dispatch(add(count)),
+  add: async (count) => {
+    setTimeout(() => dispatch(testThunk()), 1000);
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

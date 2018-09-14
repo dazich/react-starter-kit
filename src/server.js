@@ -8,7 +8,8 @@
  */
 
 import { Provider } from 'react-redux';
-import { createStore } from 'redux'
+import thunk from 'redux-thunk';
+import { createStore, applyMiddleware } from 'redux'
 import path from 'path';
 import express from 'express';
 import cookieParser from 'cookie-parser';
@@ -37,7 +38,19 @@ import { setRuntimeVariable } from './actions/runtime';
 import config from './config';
 import rootReducer from './reducers';
 
-const initStore = createStore(rootReducer)
+function loggers({ getState }) {
+  return next => action => {
+    console.info('will dispatch', action);
+    const returnValue = next(action);
+    console.info('state after dispatch', getState());
+    return returnValue;
+  };
+}
+
+const initStore = createStore(
+  rootReducer,
+  applyMiddleware(loggers, thunk),
+);
 process.on('unhandledRejection', (reason, p) => {
   console.error('Unhandled Rejection at:', p, 'reason:', reason);
   // send entire app down. Process manager will restart it
