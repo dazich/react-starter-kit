@@ -25,16 +25,46 @@ class Home extends React.Component {
     ).isRequired,
   };
 
+  state = {
+    count: 0,
+  };
+
   componentDidMount() {
     console.info('this.props::::', this.props);
   }
 
+  adds = async () => {
+    await {};
+    console.log('adds', this.state.count);
+    this.setState({ x: 123, count: this.state.count + 11 }, () => console.info(1));
+    console.info('count1', this.state)
+    this.setState({ count: this.state.count + 1 }, () => console.info(2));
+    console.info('count2', this.state)
+
+    await new Promise(resolve => {
+      this.setState({ count: this.state.count + 1 }, () => console.info(2));
+      console.info('count2', this.state)
+      resolve();
+    })
+
+    setTimeout(() => {
+      // this.setState({ count: this.state.count + 1 }, () => console.info(4));
+      // console.info('count4', this.state.count)
+    })
+
+    this.setState({ count: this.state.count + 1 }, () => console.info(5));
+    console.info('count6', this.state)
+
+  };
+
   render() {
+    const { count } = this.state;
+    console.info('rendering............')
     return (
       <div className={s.root}>
         <div className={s.container}>
-          <h1 onClick={() => this.props.add(1)}>
-            React.js News：{this.props.count}
+          <h1 onClick={() => this.adds()}>
+            React.js News：{count}-{this.props.count}
           </h1>
           {this.props.news.map(item => (
             <article key={item.link} className={s.newsItem}>
@@ -61,7 +91,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  add: async (count) => {
+  add: async count => {
     setTimeout(() => dispatch(testThunk()), 1000);
   },
 });
